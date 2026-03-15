@@ -99,7 +99,7 @@
     // Data derived directly from the presentation_outline.md document
     const slidesData = [
         {
-            title: "Slide 1: Title Slide",
+            title: "Case Study: SpaceX",
             content: `<ul>
                             <li>SpaceX Mission Control Assessment</li>
                             <li>Task 1: Launchpad App (Frontend)</li>
@@ -111,7 +111,7 @@
             time: "0:00 - 1:00"
         },
         {
-            title: "Slide 2: Agenda & Approach",
+            title: "Agenda & Approach",
             content: `<ul>
                             <li><b>The Goal:</b> Demonstrate full-stack proficiency.</li>
                             <li><b>The Approach:</b>
@@ -127,7 +127,7 @@
             time: "1:00 - 3:00"
         },
         {
-            title: "Slide 3: Task 1 - SpaceX Launchpad App",
+            title: "Task 1 - SpaceX Launchpad App",
             content: `<ul>
                             <li><b>Objective:</b> Consume SpaceX API to display launchpads.</li>
                             <li><b>Tech Stack:</b> Angular, Angular Material, RxJS.</li>
@@ -144,9 +144,9 @@
             time: "3:00 - 4:00"
         },
         {
-            title: "Slide 4: Task 1 - Live Demo (Placeholder)",
+            title: "Task 1 - Live Demo",
             content: `<ul>
-                            <li><a style="color: gold" href="https://space-x-92b2c.web.app/"> SpaceX Launchpads </a></li>
+                            <li><a style="color: gold" target="_blank" href="https://space-x-92b2c.web.app/"> SpaceX Launchpads </a></li>
                             <li><b>Focus Areas:</b>
                                 <ul>
                                     <li>API Data Fetching</li>
@@ -160,7 +160,7 @@
             time: "4:00 - 8:00"
         },
         {
-            title: "Slide 5: Task 1 - Code Walkthrough",
+            title: "Task 1 - Code Walkthrough",
             content: `<ul>
                             <li><b>Architecture:</b> Component-based design, isolated services.</li>
                             <li><b>Code Quality:</b> Strong typing, RxJS observables.</li>
@@ -171,7 +171,7 @@
             time: "8:00 - 15:00"
         },
         {
-            title: "Slide 6: Task 2 - Dragon Rockets Repository",
+            title: "Task 2 - Dragon Rockets Repository",
             content: `<ul>
                             <li><b>Objective:</b> Build a SpaceX Dragon Rockets Repository.</li>
                             <li><b>Constraint:</b> Pure Java Library (No frameworks, No REST APIs).</li>
@@ -183,7 +183,7 @@
             time: "15:00 - 16:00"
         },
         {
-            title: "Slide 7: Task 2 - Test Execution & Summary Demo",
+            title: "Task 2 - Test Execution & Summary Demo",
             content: `<ul>
                             <li>[Live Demonstration via Test Suite]</li>
                             <li><b>Simulating the System:</b>
@@ -199,7 +199,7 @@
             time: "16:00 - 20:00"
         },
         {
-            title: "Slide 8: Task 2 - Architecture & Code Walkthrough",
+            title: "Task 2 - Architecture & Code Walkthrough",
             content: `<ul>
                             <li><b>Domain Model:</b> Entities (Rocket, Mission) & Enums (Status).</li>
                             <li><b>Repository Pattern:</b> Abstracted in-memory storage logic.</li>
@@ -210,7 +210,7 @@
             time: "20:00 - 27:00"
         },
         {
-            title: "Slide 9: Conclusion & Transition",
+            title: "Conclusion & Transition",
             content: `<ul>
                             <li><b>Summary:</b>
                                 <ul>
@@ -228,7 +228,6 @@
 
     let currentSlideIndex = 0;
     let showNotes = false;
-    let showVisuals = false;
 
     // DOM Elements
     const slideContainer = document.getElementById('slide-container');
@@ -241,8 +240,6 @@
     const notesText = document.getElementById('notes-text');
     const notesTime = document.getElementById('notes-time');
 
-    const visualsContainer = document.getElementById('visuals-container');
-    const btnVisuals = document.getElementById('btn-visuals');
     const visualsText = document.getElementById('visuals-text');
 
     function renderSlide() {
