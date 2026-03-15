@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIX Interview Presentation Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow: hidden;
+        }
+        .slide-content ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .slide-content ul li {
+            margin-bottom: 0.75rem;
+            font-size: 1.5rem;
+            line-height: 1.4;
+        }
+        .slide-content ul ul {
+            list-style-type: circle;
+            margin-top: 0.5rem;
+        }
+        .slide-content ul ul li {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+        }
+
+        /* Transition animations */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-center">
+
+<!-- Slide Container -->
+<div id="slide-container" class="w-full max-w-6xl h-[70vh] flex flex-col justify-center px-12 fade-in relative">
+    <!-- Content gets injected here -->
+</div>
+
+<!-- Visual Suggestions Alert -->
+<div id="visuals-container" class="absolute top-8 right-8 max-w-sm bg-blue-900/50 border border-blue-500/30 text-blue-200 p-4 rounded-xl backdrop-blur-sm hidden shadow-lg">
+    <div class="flex items-start gap-3">
+        <i class="ph ph-image text-2xl text-blue-400"></i>
+        <div>
+            <h4 class="font-semibold text-sm uppercase tracking-wider text-blue-400 mb-1">Visual Suggestion</h4>
+            <p id="visuals-text" class="text-sm"></p>
+        </div>
+    </div>
+</div>
+
+<!-- Controls & Status Bar -->
+<div class="fixed bottom-0 left-0 w-full bg-slate-900/80 backdrop-blur-md border-t border-slate-700/50 p-4 flex items-center justify-between z-10">
+
+    <!-- Navigation Left -->
+    <div class="flex items-center gap-4">
+        <button id="btn-prev" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2">
+            <i class="ph ph-caret-left text-xl"></i> Prev
+        </button>
+        <span id="slide-counter" class="text-slate-400 font-medium">1 / 9</span>
+        <button id="btn-next" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2">
+            Next <i class="ph ph-caret-right text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Presenter Controls -->
+    <div class="flex items-center gap-4">
+        <button id="btn-notes" class="px-4 py-2 rounded-lg bg-emerald-900/40 hover:bg-emerald-800/60 text-emerald-400 border border-emerald-800/50 text-sm font-medium transition-colors flex items-center gap-2">
+            <i class="ph ph-text-align-left text-lg"></i> Toggle Speaker Notes
+        </button>
+    </div>
+</div>
+
+<!-- Speaker Notes Overlay -->
+<div id="notes-overlay" class="fixed bottom-[80px] left-1/2 -translate-x-1/2 w-full max-w-4xl bg-slate-800 border border-slate-600 shadow-2xl rounded-t-2xl p-6 transition-transform duration-300 transform translate-y-full z-0 hidden">
+    <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+        <h3 class="text-emerald-400 font-semibold uppercase tracking-wider flex items-center gap-2">
+            <i class="ph ph-microphone-stage text-xl"></i> Speaker Notes
+        </h3>
+        <span id="notes-time" class="text-sm bg-slate-900 text-slate-300 px-3 py-1 rounded-full font-mono">Time: 0:00 - 1:00</span>
+    </div>
+    <p id="notes-text" class="text-lg text-slate-200 leading-relaxed"></p>
+</div>
+
+<script>
+    // Data derived directly from the presentation_outline.md document
+    const slidesData = [
+        {
+            title: "Slide 1: Title Slide",
+            content: `<ul>
+                            <li>SpaceX Mission Control Assessment</li>
+                            <li>Task 1: Launchpad App (Frontend)</li>
+                            <li>Task 2: Dragon Rockets Library (Backend)</li>
+                            <li>Presenter: Mathieu Delphin</li>
+                          </ul>`,
+            visuals: "A clean, professional title slide. Consider using a subtle space/SpaceX-themed background image or the SIX company logo if appropriate.",
+            notes: "Good morning everyone, and thank you for taking the time to review my assessment today. I'm excited to share what I've built. I am applying for the Fullstack Developer role on the FATE Engineering Team, and today I'll be walking you through my solutions for the SpaceX case study.",
+            time: "0:00 - 1:00"
+        },
+        {
+            title: "Slide 2: Agenda & Approach",
+            content: `<ul>
+                            <li><b>The Goal:</b> Demonstrate full-stack proficiency.</li>
+                            <li><b>The Approach:</b>
+                                <ul>
+                                    <li>Task 1: Angular-based Launchpad Explorer (Live Demo + Code)</li>
+                                    <li>Task 2: Java-based Dragon Rocket Repository (Test Demo + Code)</li>
+                                </ul>
+                            </li>
+                            <li><b>Q&A Session</b></li>
+                          </ul>`,
+            visuals: "A simple bulleted agenda.",
+            notes: "The assessment instructions asked me to choose between the frontend or backend task. However, because this is a Fullstack position, I felt the best way to demonstrate my end-to-end capabilities, and my enthusiasm for the role, was to complete both.\n\nI have strictly time-boxed myself today. We will spend about 12 minutes looking at the Angular frontend application, followed by 12 minutes reviewing the Java backend library, leaving the final few minutes to wrap up before we move into the open Q&A.",
+            time: "1:00 - 3:00"
+        },
+        {
+            title: "Slide 3: Task 1 - SpaceX Launchpad App",
+            content: `<ul>
+                            <li><b>Objective:</b> Consume SpaceX API to display launchpads.</li>
+                            <li><b>Tech Stack:</b> Angular, Angular Material, RxJS.</li>
+                            <li><b>Key Features:</b>
+                                <ul>
+                                    <li>Pagination (Configurable)</li>
+                                    <li>Multi-field Filtering (Name & Region)</li>
+                                    <li>Responsive Material UI</li>
+                                </ul>
+                            </li>
+                          </ul>`,
+            visuals: "A high-quality screenshot of the final Angular application UI showing the list of launchpads.",
+            notes: "Let's dive right into Task 1. The goal was to build a web application that fetches and displays SpaceX launchpad data. I chose Angular, as requested, heavily utilized RxJS for state management and API calls, and built the UI using Angular Material to ensure a clean, modern, and accessible design. I'll switch over to my browser now to show you the live application.",
+            time: "3:00 - 4:00"
+        },
+        {
+            title: "Slide 4: Task 1 - Live Demo (Placeholder)",
+            content: `<ul>
+                            <li><a style="color: gold" href="http://localhost:4200/"> SpaceX Launchpads </a></li>
+                            <li><b>Focus Areas:</b>
+                                <ul>
+                                    <li>API Data Fetching</li>
+                                    <li>Search & Filter Logic</li>
+                                    <li>Pagination Implementation</li>
+                                </ul>
+                            </li>
+                          </ul>`,
+            visuals: "(No slide needed, you will be sharing your browser screen displaying the running app).",
+            notes: "[Action: Share browser window]\n\nHere is the application running locally. As you can see, the dashboard loads the launchpad names, regions, Wikipedia links, and their respective launches.\n\nLet me demonstrate the pagination: it defaults to 5 items, but I can easily configure it to show 10 or more.\n\nIf we want to find a specific site, I can use the filter. Notice how typing 'Florida' into the region instantly filters the results, or I can search by name. The filtering is handled cleanly on the client side to provide instant feedback. Next, let's look at how this is structured under the hood.",
+            time: "4:00 - 8:00"
+        },
+        {
+            title: "Slide 5: Task 1 - Code Walkthrough",
+            content: `<ul>
+                            <li><b>Architecture:</b> Component-based design, isolated services.</li>
+                            <li><b>Code Quality:</b> Strong typing, RxJS observables.</li>
+                            <li><b>Testing:</b> Unit and Integration tests (Jasmine/Karma or Jest).</li>
+                          </ul>`,
+            visuals: "(Transition to your IDE / Code Editor). Have the project open.",
+            notes: "[Action: Share IDE window]\n\nIn the codebase, I want to highlight my component structure. I've separated the smart components (handling state/API calls) from the presentation components (handling UI).\n\nHere in my LaunchpadService, you can see how I'm fetching data from the SpaceX API using RxJS observables and strongly typed interfaces.\n\nTo validate functionality, I wrote comprehensive tests. Let's look at this unit test for the filter logic. [Briefly show a test]. I also included integration tests to ensure the components render the Angular Material elements correctly when data is passed in. All setup and execution instructions are thoroughly documented in the GitHub repo.",
+            time: "8:00 - 15:00"
+        },
+        {
+            title: "Slide 6: Task 2 - Dragon Rockets Repository",
+            content: `<ul>
+                            <li><b>Objective:</b> Build a SpaceX Dragon Rockets Repository.</li>
+                            <li><b>Constraint:</b> Pure Java Library (No frameworks, No REST APIs).</li>
+                            <li><b>Focus:</b> TDD, SOLID Principles, Object-Oriented Design.</li>
+                            <li><b>Storage:</b> In-memory collections.</li>
+                          </ul>`,
+            visuals: "A screenshot of your GitHub repository commit history showing the TDD progression (e.g., \"red/green/refactor\" commit messages).",
+            notes: "Moving on to Task 2, which I approached purely as a backend engineer. The requirement was strict: build a simple Java library, not a microservice or API.\n\nThe focus here was entirely on software craftsmanship—specifically Test-Driven Development, SOLID principles, and clean Object-Oriented design using an in-memory data store.",
+            time: "15:00 - 16:00"
+        },
+        {
+            title: "Slide 7: Task 2 - Test Execution & Summary Demo",
+            content: `<ul>
+                            <li>[Live Demonstration via Test Suite]</li>
+                            <li><b>Simulating the System:</b>
+                                <ul>
+                                    <li>Adding Rockets & Missions</li>
+                                    <li>Handling Status Transitions (e.g., In Repair -> Pending)</li>
+                                    <li>Generating the Sorted Summary</li>
+                                </ul>
+                            </li>
+                          </ul>`,
+            visuals: "(Share your IDE running the JUnit test suite and the console output).",
+            notes: "[Action: Share IDE window running tests]\n\nBecause this is a library, the best way to 'demo' it is through the test suite. I'm going to run my full test suite now. As you can see, all tests pass.\n\nI created a specific test scenario that mirrors the exact example provided in the assessment instructions. It loads the system with missions like 'Mars', 'Luna1', and 'Transit', and assigns the specified rockets.\n\nIf we look at the console output generated by this test, you can see the generated summary. It successfully calculates the number of Dragons per mission, and perfectly sorts them by rocket count descending, and then alphabetically for missions with the same number of rockets, exactly as specified.",
+            time: "16:00 - 20:00"
+        },
+        {
+            title: "Slide 8: Task 2 - Architecture & Code Walkthrough",
+            content: `<ul>
+                            <li><b>Domain Model:</b> Entities (Rocket, Mission) & Enums (Status).</li>
+                            <li><b>Repository Pattern:</b> Abstracted in-memory storage logic.</li>
+                            <li><b>Business Logic:</b> Encapsulated state transition rules.</li>
+                          </ul>`,
+            visuals: "Keep sharing the IDE to walk through specific Java classes.",
+            notes: "Let's look at the code structure. I started by defining the Domain models: Rocket and Mission. The statuses are strictly controlled using Java Enums.\n\nI applied the Single Responsibility Principle by separating the storage mechanism (the in-memory collections) from the business logic.\n\nA key requirement was managing state transitions—for example, a mission becomes 'Pending' if a rocket is 'In repair'. I encapsulated this logic securely so the state cannot be illegally altered from outside.\n\nI also want to highlight how TDD guided this design. Every feature was written test-first, which naturally led to highly decoupled and testable code.",
+            time: "20:00 - 27:00"
+        },
+        {
+            title: "Slide 9: Conclusion & Transition",
+            content: `<ul>
+                            <li><b>Summary:</b>
+                                <ul>
+                                    <li>Task 1  UI/UX, API integration, and Angular ecosystem knowledge.</li>
+                                    <li>Task 2  Software engineering, algorithmic logic, and architecture.</li>
+                                </ul>
+                            </li>
+                            <li><b>Next Steps:</b> Open for Questions!</li>
+                          </ul>`,
+            visuals: "A clean \"Thank You / Q&A\" slide. Include a link/QR code to your GitHub profile if you wish.",
+            notes: "To wrap up, completing both tasks gave me a great opportunity to explore the type of challenges the FATE team works on. Task 1 allowed me to demonstrate my frontend skills in building standard, user-friendly web applications, while Task 2 allowed me to showcase my foundational backend engineering skills in Java.\n\nI have pushed both of these to remote repositories, complete with detailed README files outlining my assumptions and setup instructions.\n\nThank you for your time and attention over the last 30 minutes. I would now love to open the floor to any questions you have about my code, my architectural decisions, or my experience.",
+            time: "27:00 - 30:00"
+        }
+    ];
+
+    let currentSlideIndex = 0;
+    let showNotes = false;
+    let showVisuals = false;
+
+    // DOM Elements
+    const slideContainer = document.getElementById('slide-container');
+    const slideCounter = document.getElementById('slide-counter');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+
+    const notesOverlay = document.getElementById('notes-overlay');
+    const btnNotes = document.getElementById('btn-notes');
+    const notesText = document.getElementById('notes-text');
+    const notesTime = document.getElementById('notes-time');
+
+    const visualsContainer = document.getElementById('visuals-container');
+    const btnVisuals = document.getElementById('btn-visuals');
+    const visualsText = document.getElementById('visuals-text');
+
+    function renderSlide() {
+        const slide = slidesData[currentSlideIndex];
+
+        // Trigger reflow for animation
+        slideContainer.classList.remove('fade-in');
+        void slideContainer.offsetWidth;
+        slideContainer.classList.add('fade-in');
+
+        // Set content
+        slideContainer.innerHTML = `
+                <h2 class="text-4xl md:text-5xl font-bold text-blue-400 mb-8">${slide.title}</h2>
+                <div class="slide-content text-xl md:text-2xl text-slate-200">
+                    ${slide.content}
+                </div>
+            `;
+
+        // Update Counter
+        slideCounter.innerText = `${currentSlideIndex + 1} / ${slidesData.length}`;
+
+        // Update Buttons
+        btnPrev.disabled = currentSlideIndex === 0;
+        btnNext.disabled = currentSlideIndex === slidesData.length - 1;
+
+        // Update Notes
+        notesText.innerText = slide.notes;
+        notesTime.innerText = `Time: ${slide.time}`;
+
+        // Update Visuals Suggestion
+        visualsText.innerText = slide.visuals;
+    }
+
+    function nextSlide() {
+        if (currentSlideIndex < slidesData.length - 1) {
+            currentSlideIndex++;
+            renderSlide();
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlideIndex > 0) {
+            currentSlideIndex--;
+            renderSlide();
+        }
+    }
+
+    function toggleNotes() {
+        showNotes = !showNotes;
+        if (showNotes) {
+            notesOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                notesOverlay.classList.remove('translate-y-full');
+                notesOverlay.classList.add('translate-y-0');
+            }, 10);
+            btnNotes.classList.replace('bg-emerald-900/40', 'bg-emerald-600');
+            btnNotes.classList.replace('text-emerald-400', 'text-white');
+        } else {
+            notesOverlay.classList.remove('translate-y-0');
+            notesOverlay.classList.add('translate-y-full');
+            setTimeout(() => {
+                notesOverlay.classList.add('hidden');
+            }, 300);
+            btnNotes.classList.replace('bg-emerald-600', 'bg-emerald-900/40');
+            btnNotes.classList.replace('text-white', 'text-emerald-400');
+        }
+    }
+
+    // Event Listeners
+    btnNext.addEventListener('click', nextSlide);
+    btnPrev.addEventListener('click', prevSlide);
+    btnNotes.addEventListener('click', toggleNotes);
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'Space') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        } else if (e.key === 'n') {
+            toggleNotes();
+        }
+    });
+
+    // Initial Render
+    renderSlide();
+</script>
+</body>
+</html>
