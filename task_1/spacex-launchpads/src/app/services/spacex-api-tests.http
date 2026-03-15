@@ -1,0 +1,42 @@
+### 1. Display all query
+POST https://api.spacexdata.com/v4/launchpads/query
+Content-Type: application/json
+
+{
+  "query": {},
+  "options": {}
+}
+
+### 2. Check filtering
+POST https://api.spacexdata.com/v4/launchpads/query
+Content-Type: application/json
+
+{
+  "query": {
+    "region": "Florida"
+  },
+  "options": {
+    "limit": 2
+  }
+}
+
+### 3. Search with filter for pagination
+POST https://api.spacexdata.com/v4/launchpads/query
+Content-Type: application/json
+
+{
+  "query": {
+    "status": "active"
+  },
+  "options": {
+    "select": {
+      "name": 1,
+      "locality": 1,
+      "status": 1
+    },
+    "sort": {
+      "name": "asc"
+    },
+    "limit": 40
+  }
+}
