@@ -1,11 +1,85 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SpacexService } from '../services/spacex.service';
+import { Launch, Launchpad, PaginatedResponse } from '../models/spacex.models';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+
+// Angular Material Imports
+import { MatCardModule } from '@angular/material/card';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-launchpad-list',
-  imports: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatPaginatorModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatExpansionModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    FormsModule
+  ],
   templateUrl: './launchpad-list.html',
-  styleUrl: './launchpad-list.scss',
+  styleUrls: ['./launchpad-list.scss']
 })
-export class LaunchpadList {
+export class LaunchpadList implements OnInit, OnDestroy {
+  private spacexService = inject(SpacexService);
+  private snackBar = inject(MatSnackBar);
+  private destroy$ = new Subject<void>();
+  private searchSubject = new Subject<string>();
 
+  launchpads: Launchpad[] = [];
+  isLoading = false;
+  errorMessage = '';
+
+  // Pagination params
+  totalDocs = 0;
+  pageSize = 5;
+  currentPage = 0;
+  pageSizeOptions = [2, 5, 10, 25];
+
+  searchTerm = '';
+
+  ngOnInit(): void {
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(term => {
+      this.searchTerm = term;
+      this.currentPage = 0;
+    });
+
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+  }
+
+  trackLaunchpad(index: number, item: Launchpad): string {
+    return item.id;
+  }
+
+  trackLaunch(index: number, item: Launch): string {
+    return item.id;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

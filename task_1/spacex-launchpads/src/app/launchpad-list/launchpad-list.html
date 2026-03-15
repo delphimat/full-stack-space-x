@@ -1,1 +1,107 @@
-<p>launchpad-list works!</p>
+<div class="launchpad-container">
+  <div class="header">
+    <h1>SpaceX Launchpads</h1>
+
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Launchpads</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        type="text"
+        placeholder="Search by name or region"
+        [ngModel]="searchTerm"
+      >
+      <button
+        *ngIf="searchTerm"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading launchpads...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-stroked-button color="primary" >Retry</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && launchpads.length === 0" class="empty-container">
+    <mat-icon>info</mat-icon>
+    <p>No launchpads found matching your search.</p>
+  </div>
+
+  <div class="launchpad-grid" *ngIf="!isLoading && !errorMessage && launchpads.length > 0">
+    <mat-card class="launchpad-card" *ngFor="let pad of launchpads; trackBy: trackLaunchpad">
+      <mat-card-header>
+        <div mat-card-avatar class="launchpad-avatar">
+          <mat-icon>rocket_launch</mat-icon>
+        </div>
+        <mat-card-title>{{ pad.name }}</mat-card-title>
+        <mat-card-subtitle>{{ pad.region }} - {{ pad.locality }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <img
+        mat-card-image
+        [src]="pad.images.large[0] || 'assets/placeholder-launchpad.jpg'"
+        [alt]="pad.name"
+        class="launchpad-image"
+      >
+
+      <mat-card-content>
+        <div class="details-section">
+          <p><strong>Status:</strong> <span class="status-badge" [ngClass]="pad.status.toLowerCase()">{{ pad.status | titlecase }}</span></p>
+          <p class="description">{{ pad.details }}</p>
+        </div>
+
+        <mat-accordion class="launches-accordion" *ngIf="pad.launches && pad.launches.length > 0; else noLaunches">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Recent Launches ({{ pad.launches.length }})
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="launch-list">
+              <div class="launch-item" *ngFor="let launch of pad.launches; trackBy: trackLaunch">
+                <div class="launch-info">
+                  <span class="launch-name">{{ launch.name }}</span>
+                  <span class="launch-flight">Flight #{{ launch.flight_number }}</span>
+                </div>
+                <div class="launch-date">{{ launch.date_utc | date:'mediumDate' }}</div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <ng-template #noLaunches>
+          <div class="no-launches">No launches available.</div>
+        </ng-template>
+
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <a mat-button color="primary"  target="_blank" rel="noopener noreferrer">
+          <mat-icon>public</mat-icon> Wikipedia
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <mat-paginator
+    [length]="totalDocs"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    [pageIndex]="currentPage"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+    aria-label="Select page">
+  </mat-paginator>
+
+</div>
