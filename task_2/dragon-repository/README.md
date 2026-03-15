@@ -40,3 +40,12 @@ This library enforces business rules and state transitions using an in-memory da
 - **Single Responsibility Principle**: The classes have defined roles. Entities manage state, the repository manages storage, and the service manages cross-entity business logic.
 - **Encapsulation**: `Mission.getAssignedRockets()` returns an unmodifiable list (`Collections.unmodifiableList`).
 - **Test-Driven Development (TDD)**: `mvn clean test` succeeds with 17 tests passing in ~0.9 seconds
+
+## Remarks on Case Study Requirements
+
+During the analysis of the requirements for Task 2, a logical contradiction was identified between the explicitly defined status rules and the provided "Example Summary":
+
+- **The Rule:** The specifications state that a mission's status is **Pending** if there is "at least one rocket in repair". Conversely, a mission is **In Progress** if there is "at least one rocket assigned, none in repair".
+- **The Example Discrepancy:** In the provided example data, the mission "Luna1" is listed with a **Pending** status. However, both of its assigned rockets ("Dragon 1" and "Dragon 2") are listed with an "On ground" status.
+- **The Resolution:** Because neither of the assigned rockets is "In repair," the mission "Luna1" actually fits the criteria for **In Progress** , not **Pending**. 
+- For my implementation, I have assumed that the strictly defined business rules for statuses take precedence over the sample data output.

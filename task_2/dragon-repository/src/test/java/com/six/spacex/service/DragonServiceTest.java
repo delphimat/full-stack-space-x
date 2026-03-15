@@ -170,4 +170,27 @@ class DragonServiceTest {
         assertThat(summary).extracting(Mission::getName)
                 .containsExactly("Mars", "Zeta", "Moon", "Alpha", "Empty");
     }
+
+    @Test
+    void testMissionStatusWithMultipleRockets_ShouldBePendingIfAtLeastOneIsInRepair() {
+        Mission m = service.createMission("Multi-Rocket Mission");
+        Rocket r1 = service.createRocket("R1");
+        Rocket r2 = service.createRocket("R2");
+
+        service.assignRocketToMission("R1", "Multi-Rocket Mission");
+        service.assignRocketToMission("R2", "Multi-Rocket Mission");
+        assertThat(m.getStatus()).isEqualTo(MissionStatus.IN_PROGRESS);
+
+        service.updateRocketStatus("R1", RocketStatus.IN_REPAIR);
+        assertThat(m.getStatus()).isEqualTo(MissionStatus.PENDING);
+
+        service.updateRocketStatus("R2", RocketStatus.IN_REPAIR);
+        assertThat(m.getStatus()).isEqualTo(MissionStatus.PENDING);
+
+        service.updateRocketStatus("R1", RocketStatus.ON_GROUND);
+        assertThat(m.getStatus()).isEqualTo(MissionStatus.PENDING);
+
+        service.updateRocketStatus("R2", RocketStatus.ON_GROUND);
+        assertThat(m.getStatus()).isEqualTo(MissionStatus.IN_PROGRESS);
+    }
 }
