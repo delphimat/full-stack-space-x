@@ -79,3 +79,74 @@ mat-card-content {
     overflow: hidden;
   }
 }
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+
+  &.active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  &.retired {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  &.under {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+}
+
+.launches-accordion {
+  margin-top: 16px;
+}
+
+.launch-list {
+  max-height: 200px;
+  overflow-y: auto;
+
+  .launch-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .launch-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .launch-name {
+    font-weight: 500;
+  }
+
+  .launch-flight {
+    font-size: 0.8rem;
+    color: #777;
+  }
+
+  .launch-date {
+    font-size: 0.85rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.no-launches {
+  padding: 16px;
+  text-align: center;
+  color: #888;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  margin-top: 16px;
+}
