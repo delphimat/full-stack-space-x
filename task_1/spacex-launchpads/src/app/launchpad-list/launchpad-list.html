@@ -43,60 +43,64 @@
     </div>
   } @else {
     <div class="launchpad-grid">
-      <mat-card class="launchpad-card" *ngFor="let pad of launchpads; trackBy: trackLaunchpad">
-        <mat-card-header>
-          <div mat-card-avatar class="launchpad-avatar">
-            <mat-icon>rocket_launch</mat-icon>
-          </div>
-          <mat-card-title>{{ pad.name }}</mat-card-title>
-          <mat-card-subtitle>{{ pad.region }} - {{ pad.locality }}</mat-card-subtitle>
-        </mat-card-header>
+      @for (pad of launchpads; track pad.id) {
+        <mat-card class="launchpad-card">
+          <mat-card-header>
+            <div mat-card-avatar class="launchpad-avatar">
+              <mat-icon>rocket_launch</mat-icon>
+            </div>
+            <mat-card-title>{{ pad.name }}</mat-card-title>
+            <mat-card-subtitle>{{ pad.region }} - {{ pad.locality }}</mat-card-subtitle>
+          </mat-card-header>
 
-        <img
-          mat-card-image
-          [src]="pad.images.large[0] || 'assets/placeholder-launchpad.jpg'"
-          [alt]="pad.name"
-          class="launchpad-image"
-        >
+          <img
+            mat-card-image
+            [src]="pad.images.large[0] || 'assets/placeholder-launchpad.jpg'"
+            [alt]="pad.name"
+            class="launchpad-image"
+          >
 
-        <mat-card-content>
-          <div class="details-section">
-            <p><strong>Status:</strong> <span class="status-badge" [ngClass]="pad.status.toLowerCase()">{{ pad.status | titlecase }}</span></p>
-            <p class="description">{{ pad.details }}</p>
-          </div>
+          <mat-card-content>
+            <div class="details-section">
+              <p><strong>Status:</strong> <span class="status-badge" [ngClass]="pad.status.toLowerCase()">{{ pad.status | titlecase }}</span></p>
+              <p class="description">{{ pad.details }}</p>
+            </div>
 
-          @if (pad.launches && pad.launches.length > 0) {
-            <mat-accordion class="launches-accordion">
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Recent Launches ({{ pad.launches.length }})
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
+            @if (pad.launches && pad.launches.length > 0) {
+              <mat-accordion class="launches-accordion">
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Recent Launches ({{ pad.launches.length }})
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
 
-                <div class="launch-list">
-                  <div class="launch-item" *ngFor="let launch of pad.launches; trackBy: trackLaunch">
-                    <div class="launch-info">
-                      <span class="launch-name">{{ launch.name }}</span>
-                      <span class="launch-flight">Flight #{{ launch.flight_number }}</span>
-                    </div>
-                    <div class="launch-date">{{ launch.date_utc | date:'mediumDate' }}</div>
+                  <div class="launch-list">
+                    @for (launch of pad.launches; track launch.id) {
+                      <div class="launch-item">
+                        <div class="launch-info">
+                          <span class="launch-name">{{ launch.name }}</span>
+                          <span class="launch-flight">Flight #{{ launch.flight_number }}</span>
+                        </div>
+                        <div class="launch-date">{{ launch.date_utc | date:'mediumDate' }}</div>
+                      </div>
+                    }
                   </div>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          } @else {
-            <div class="no-launches">No launches available.</div>
-          }
+                </mat-expansion-panel>
+              </mat-accordion>
+            } @else {
+              <div class="no-launches">No launches available.</div>
+            }
 
-        </mat-card-content>
+          </mat-card-content>
 
-        <mat-card-actions align="end">
-          <a mat-button color="primary" [href]="getWikipediaUrl(pad)" target="_blank" rel="noopener noreferrer">
-            <mat-icon>public</mat-icon> Wikipedia
-          </a>
-        </mat-card-actions>
-      </mat-card>
+          <mat-card-actions align="end">
+            <a mat-button color="primary" [href]="getWikipediaUrl(pad)" target="_blank" rel="noopener noreferrer">
+              <mat-icon>public</mat-icon> Wikipedia
+            </a>
+          </mat-card-actions>
+        </mat-card>
+      }
     </div>
   }
 
