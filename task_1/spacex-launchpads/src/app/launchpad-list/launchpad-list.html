@@ -9,6 +9,7 @@
         matInput
         type="text"
         placeholder="Search by name or region"
+        (ngModelChange)="onSearchChange($event)"
         [ngModel]="searchTerm"
       >
       <button
@@ -16,6 +17,7 @@
         matSuffix
         mat-icon-button
         aria-label="Clear"
+        (click)="onSearchChange('')"
       >
         <mat-icon>close</mat-icon>
       </button>
@@ -30,7 +32,7 @@
   <div *ngIf="errorMessage" class="error-container">
     <mat-icon color="warn">error</mat-icon>
     <p>{{ errorMessage }}</p>
-    <button mat-stroked-button color="primary" >Retry</button>
+    <button mat-stroked-button color="primary" (click)="loadLaunchpads()">Retry</button>
   </div>
 
   <div *ngIf="!isLoading && !errorMessage && launchpads.length === 0" class="empty-container">
@@ -87,7 +89,7 @@
       </mat-card-content>
 
       <mat-card-actions align="end">
-        <a mat-button color="primary"  target="_blank" rel="noopener noreferrer">
+        <a mat-button color="primary" [href]="getWikipediaUrl(pad)" target="_blank" rel="noopener noreferrer">
           <mat-icon>public</mat-icon> Wikipedia
         </a>
       </mat-card-actions>

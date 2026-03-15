@@ -54,6 +54,7 @@ export class LaunchpadList implements OnInit, OnDestroy {
   searchTerm = '';
 
   ngOnInit(): void {
+    // Setup search debounce
     this.searchSubject.pipe(
       debounceTime(400),
       distinctUntilChanged(),
@@ -61,13 +62,49 @@ export class LaunchpadList implements OnInit, OnDestroy {
     ).subscribe(term => {
       this.searchTerm = term;
       this.currentPage = 0;
+      this.loadLaunchpads();
     });
 
+    this.loadLaunchpads();
+  }
+
+  loadLaunchpads(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    const apiPage = this.currentPage + 1;
+
+    this.spacexService.getLaunchpads(apiPage, this.pageSize, this.searchTerm)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: PaginatedResponse<Launchpad>) => {
+          this.launchpads = response.docs;
+          this.totalDocs = response.totalDocs;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.errorMessage = 'Failed to load launchpads. Please try again later.';
+          this.isLoading = false;
+          console.error('Error fetching launchpads:', err);
+          this.snackBar.open(this.errorMessage, 'Retry', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+          }).onAction().subscribe(() => {
+            this.loadLaunchpads();
+          });
+        }
+      });
   }
 
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
+    this.loadLaunchpads();
+  }
+
+  onSearchChange(term: string): void {
+    this.searchSubject.next(term);
   }
 
   trackLaunchpad(index: number, item: Launchpad): string {
@@ -76,6 +113,12 @@ export class LaunchpadList implements OnInit, OnDestroy {
 
   trackLaunch(index: number, item: Launch): string {
     return item.id;
+  }
+
+  getWikipediaUrl(pad: Launchpad): string {
+    const nameToUse = pad.full_name || pad.name;
+    const formattedName = nameToUse.replace(/ /g, '_');
+    return `https://en.wikipedia.org/w/index.php?search=${formattedName}`;
   }
 
   ngOnDestroy(): void {
