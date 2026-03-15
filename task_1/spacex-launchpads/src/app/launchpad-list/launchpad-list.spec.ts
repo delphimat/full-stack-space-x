@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { LaunchpadList } from './launchpad-list';
 import { SpacexService } from '../services/spacex.service';
-import { of } from 'rxjs';
+import {of, throwError} from 'rxjs';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -70,4 +70,45 @@ describe('LaunchpadListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should load launchpads on init', () => {
+    expect(spacexServiceSpy.getLaunchpads).toHaveBeenCalledWith(1, 5, '');
+    expect(component.launchpads.length).toBe(1);
+    expect(component.launchpads[0].name).toBe('Ariane flight VA256');
+    expect(component.isLoading).toBeFalse();
+  });
+
+  it('should handle pagination changes', () => {
+    component.onPageChange({ pageIndex: 1, pageSize: 10, length: 1 });
+    expect(spacexServiceSpy.getLaunchpads).toHaveBeenCalledWith(2, 10, '');
+  });
+
+  it('should debounce search input and trigger load', fakeAsync(() => {
+    spacexServiceSpy.getLaunchpads.calls.reset();
+
+    component.onSearchChange('cali');
+    tick(200);
+    expect(spacexServiceSpy.getLaunchpads).not.toHaveBeenCalled();
+
+    tick(200); // 400ms total
+    expect(spacexServiceSpy.getLaunchpads).toHaveBeenCalledWith(1, 5, 'cali');
+    expect(component.currentPage).toBe(0);
+  }));
+
+  it('should handle API errors gracefully', () => {
+    spacexServiceSpy.getLaunchpads.and.returnValue(throwError(() => new Error('API Error')));
+    component.loadLaunchpads();
+
+    expect(component.isLoading).toBeFalse();
+    expect(component.errorMessage).toBe('Failed to load launchpads. Please try again later.');
+  });
+
+  it('should generate correct Wikipedia URL', () => {
+    const padWithFullName: any = { full_name: 'Ariana Space' };
+    expect(component.getWikipediaUrl(padWithFullName)).toBe('https://en.wikipedia.org/w/index.php?search=Ariana_Space');
+
+    const padWithNameFallback: any = { name: 'flight VA256' };
+    expect(component.getWikipediaUrl(padWithNameFallback)).toBe('https://en.wikipedia.org/w/index.php?search=flight_VA256');
+  });
+
 });
