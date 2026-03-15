@@ -8,5 +8,5 @@ import { LaunchpadList } from './launchpad-list/launchpad-list';
   template: `<app-launchpad-list></app-launchpad-list>`,
 })
 export class App {
-  protected title = 'spacex-launchpads';
+  public title = 'spacex-launchpads';
 }
