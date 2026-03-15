@@ -12,6 +12,9 @@ interface MongoQueryPayload {
     populate?: Array<{
       path: string;
       select?: Record<string, number>;
+      options?: {
+        sort?: Record<string, number>;
+      };
     }>;
   };
 }
@@ -45,6 +48,9 @@ export class SpacexService {
               flight_number: 1,
               date_utc: 1,
               id: 1
+        },
+        options: {
+          sort: { date_utc: -1 }
             }
           }
         ]
