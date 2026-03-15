@@ -4,6 +4,18 @@ import { Observable } from 'rxjs';
 import { Launchpad, PaginatedResponse } from '../models/spacex.models';
 import { environment } from '../../environments/environment';
 
+interface MongoQueryPayload {
+  query: Record<string, any>;
+  options: {
+    page: number;
+    limit: number;
+    populate?: Array<{
+      path: string;
+      select?: Record<string, number>;
+    }>;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +32,7 @@ export class SpacexService {
    * @param filterTerm An optional search term to filter by name or region.
    */
   getLaunchpads(page: number = 1, limit: number = 5, filterTerm: string = ''): Observable<PaginatedResponse<Launchpad>> {
-    const queryPayload: any = {
+    const queryPayload: MongoQueryPayload = {
       query: {},
       options: {
         page,
