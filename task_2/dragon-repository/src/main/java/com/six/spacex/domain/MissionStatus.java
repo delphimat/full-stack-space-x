@@ -1,4 +1,8 @@
 package com.six.spacex.domain;
 
-public class MissionStatus {
+public enum MissionStatus {
+    SCHEDULED,
+    PENDING,
+    IN_PROGRESS,
+    ENDED
 }
