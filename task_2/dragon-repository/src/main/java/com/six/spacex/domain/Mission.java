@@ -6,12 +6,12 @@ import java.util.List;
 public class Mission {
     private final String name;
     private MissionStatus status;
-    private final List<Rocket> assignedRockets;
+    private final Set<Rocket> assignedRockets;
 
     public Mission(String name) {
         this.name = name;
         this.status = MissionStatus.SCHEDULED;
-        this.assignedRockets = new ArrayList<>();
+        this.assignedRockets = new HashSet<>();
     }
 
     public String getName() {
@@ -26,13 +26,11 @@ public class Mission {
         this.status = status;
     }
 
-    public List<Rocket> getAssignedRockets() {
-        return Collections.unmodifiableList(assignedRockets);
+    public Set<Rocket> getAssignedRockets() {
+        return Collections.unmodifiableSet(assignedRockets);
     }
 
     public void assignRocket(Rocket rocket) {
-        if (!this.assignedRockets.contains(rocket)) {
-            this.assignedRockets.add(rocket);
-        }
+        this.assignedRockets.add(rocket);
     }
 }
