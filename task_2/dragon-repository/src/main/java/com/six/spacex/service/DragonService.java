@@ -102,14 +102,12 @@ public class DragonService {
         }
     }
 
-    /**
-     * Ascending alphabetical order (A-Z) makes more logical sense for sorting names
-     */
     public List<Mission> getMissionSummary() {
         return repository.findAllMissions().stream()
-                .sorted(Comparator.comparingInt((Mission m) -> m.getAssignedRockets().size())
-                        .reversed()
-                        .thenComparing(Comparator.comparing(Mission::getName)))
+                .sorted(
+                        Comparator.comparingInt((Mission m) -> m.getAssignedRockets().size()).reversed()
+                                .thenComparing(Mission::getName, Comparator.reverseOrder())
+                )
                 .collect(Collectors.toList());
     }
 }

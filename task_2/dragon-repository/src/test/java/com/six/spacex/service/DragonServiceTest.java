@@ -163,11 +163,11 @@ class DragonServiceTest {
 
         // Expected
         // Mars (2 rockets)
-        // Alpha (1 rocket) - comes before Moon and Zeta (A < M < Z)
+        // Zeta (1 rocket) - descending alphabetical order for missions with 1 rocket
         // Moon (1 rocket)
-        // Zeta (1 rocket)
+        // Alpha (1 rocket)
         // Empty (0 rockets)
         assertThat(summary).extracting(Mission::getName)
-                .containsExactly("Mars", "Alpha", "Moon", "Zeta", "Empty");
+                .containsExactly("Mars", "Zeta", "Moon", "Alpha", "Empty");
     }
 }
