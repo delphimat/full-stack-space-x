@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { LaunchpadList } from './launchpad-list/launchpad-list';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [LaunchpadList],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
