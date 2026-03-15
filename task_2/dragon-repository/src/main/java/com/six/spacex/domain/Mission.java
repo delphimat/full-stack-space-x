@@ -33,4 +33,8 @@ public class Mission {
     public void assignRocket(Rocket rocket) {
         this.assignedRockets.add(rocket);
     }
+
+    public void unassignRocket(Rocket rocket) {
+        this.assignedRockets.remove(rocket);
+    }
 }

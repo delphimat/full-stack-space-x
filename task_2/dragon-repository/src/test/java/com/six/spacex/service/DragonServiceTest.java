@@ -54,8 +54,10 @@ class DragonServiceTest {
     @Test
     void testAssignRocket_ToEndedMission_ShouldThrowException() {
         Mission m = service.createMission("Mars");
-        m.setStatus(MissionStatus.ENDED);
         service.createRocket("F1");
+        service.assignRocketToMission("F1", "Mars");
+        service.unassignRocketToMission("F1", "Mars"); // Mission is now ENDED
+        assertThat(m.getStatus()).isEqualTo(MissionStatus.ENDED);
 
         assertThatThrownBy(() -> service.assignRocketToMission("F1", "Mars"))
                 .isInstanceOf(IllegalStateException.class)
@@ -104,34 +106,15 @@ class DragonServiceTest {
     }
 
     @Test
-    void testUpdateMissionStatus_ToEnded() {
-        Mission m = service.createMission("Mars");
-        service.createRocket("F1");
-        service.assignRocketToMission("F1", "Mars");
-
-        service.updateMissionStatus("Mars", MissionStatus.ENDED);
-
-        assertThat(m.getStatus()).isEqualTo(MissionStatus.ENDED);
-    }
-
-    @Test
-    void testUpdateMissionStatus_FromEnded_ShouldThrowException() {
-        Mission m = service.createMission("Mars");
-        service.updateMissionStatus("Mars", MissionStatus.ENDED);
-
-        assertThatThrownBy(() -> service.updateMissionStatus("Mars", MissionStatus.IN_PROGRESS))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Cannot change the status of an ENDED mission");
-    }
-
-    @Test
     void testAssignRocket_AfterMissionEnded_ShouldBePossibleForNewMission() {
-        service.createMission("Mars");
+        Mission mars = service.createMission("Mars");
         service.createMission("Moon");
         Rocket r = service.createRocket("F1");
 
         service.assignRocketToMission("F1", "Mars");
-        service.updateMissionStatus("Mars", MissionStatus.ENDED);
+        service.unassignRocketToMission("F1", "Mars");
+        assertThat(mars.getStatus()).isEqualTo(MissionStatus.ENDED);
+
         service.assignRocketToMission("F1", "Moon");
 
         Mission moon = repository.findMissionByName("Moon").get();
@@ -140,11 +123,11 @@ class DragonServiceTest {
 
     @Test
     void testGetSummaryOfMissions_ShouldOrderCorrectly() {
-        Mission mars = service.createMission("Mars"); // 2 rockets
-        Mission moon = service.createMission("Moon"); // 1 rocket
-        Mission alpha = service.createMission("Alpha"); // 1 rocket
-        Mission zeta = service.createMission("Zeta"); // 1 rocket
-        Mission empty = service.createMission("Empty"); // 0 rockets
+        service.createMission("Mars"); // 2 rockets
+        service.createMission("Moon"); // 1 rocket
+        service.createMission("Alpha"); // 1 rocket
+        service.createMission("Zeta"); // 1 rocket
+        service.createMission("Empty"); // 0 rockets
 
         service.createRocket("R1");
         service.createRocket("R2");
@@ -174,8 +157,8 @@ class DragonServiceTest {
     @Test
     void testMissionStatusWithMultipleRockets_ShouldBePendingIfAtLeastOneIsInRepair() {
         Mission m = service.createMission("Multi-Rocket Mission");
-        Rocket r1 = service.createRocket("R1");
-        Rocket r2 = service.createRocket("R2");
+        service.createRocket("R1");
+        service.createRocket("R2");
 
         service.assignRocketToMission("R1", "Multi-Rocket Mission");
         service.assignRocketToMission("R2", "Multi-Rocket Mission");
@@ -192,5 +175,39 @@ class DragonServiceTest {
 
         service.updateRocketStatus("R2", RocketStatus.ON_GROUND);
         assertThat(m.getStatus()).isEqualTo(MissionStatus.IN_PROGRESS);
+    }
+
+    @Test
+    void testUnassignRocketToMission_ShouldEndMissionIfInProgressAndLastRocket() {
+        // Given
+        Mission mission = service.createMission("Apollo 13");
+        Rocket rocket = service.createRocket("Odyssey");
+        service.assignRocketToMission(rocket.getId(), mission.getName());
+        assertThat(mission.getStatus()).isEqualTo(MissionStatus.IN_PROGRESS);
+
+        // When
+        service.unassignRocketToMission(rocket.getId(), mission.getName());
+
+        // Then
+        Mission endedMission = repository.findMissionByName("Apollo 13").get();
+        assertThat(endedMission.getStatus()).isEqualTo(MissionStatus.ENDED);
+        assertThat(endedMission.getAssignedRockets()).isEmpty();
+    }
+
+    @Test
+    void testUnassignRocketToMission_ShouldScheduleMissionIfPendingAndLastRocket() {
+        // Given
+        Mission mission = service.createMission("Apollo 14");
+        Rocket rocket = service.createRocket("Kitty Hawk");
+        service.assignRocketToMission(rocket.getId(), mission.getName());
+        service.updateRocketStatus(rocket.getId(), RocketStatus.IN_REPAIR);
+        assertThat(mission.getStatus()).isEqualTo(MissionStatus.PENDING);
+
+        // When
+        service.unassignRocketToMission(rocket.getId(), mission.getName());
+
+        // Then
+        assertThat(mission.getStatus()).isEqualTo(MissionStatus.SCHEDULED);
+        assertThat(mission.getAssignedRockets()).isEmpty();
     }
 }

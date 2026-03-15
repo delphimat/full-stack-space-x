@@ -54,6 +54,20 @@ public class DragonService {
         evaluateMissionStatus(mission);
     }
 
+    public void unassignRocketToMission(String rocketId, String missionName) {
+        Rocket rocket = repository.findRocketById(rocketId)
+                .orElseThrow(() -> new IllegalArgumentException("Rocket not found"));
+        Mission mission = repository.findMissionByName(missionName)
+                .orElseThrow(() -> new IllegalArgumentException("Mission not found"));
+
+        if (!mission.getAssignedRockets().contains(rocket)) {
+            throw new IllegalArgumentException("Rocket is not assigned to this mission");
+        }
+
+        mission.unassignRocket(rocket);
+        evaluateMissionStatus(mission);
+    }
+
     public void updateRocketStatus(String rocketId, RocketStatus newStatus) {
         Rocket rocket = repository.findRocketById(rocketId).orElseThrow(() -> new IllegalArgumentException("Rocket not found"));
 
@@ -66,27 +80,17 @@ public class DragonService {
         }
     }
 
-    public void updateMissionStatus(String missionName, MissionStatus newStatus) {
-        Mission mission = repository.findMissionByName(missionName).orElseThrow(() -> new IllegalArgumentException("Mission not found"));
-
-        if (mission.getStatus() == MissionStatus.ENDED) {
-            throw new IllegalStateException("Cannot change the status of an ENDED mission");
-        }
-
-        mission.setStatus(newStatus);
-
-        if (newStatus != MissionStatus.ENDED) {
-            evaluateMissionStatus(mission);
-        }
-    }
-
     private void evaluateMissionStatus(Mission mission) {
         if (mission.getStatus() == MissionStatus.ENDED) {
             return;
         }
 
         if (mission.getAssignedRockets().isEmpty()) {
-            mission.setStatus(MissionStatus.SCHEDULED);
+            if (mission.getStatus() == MissionStatus.IN_PROGRESS) {
+                mission.setStatus(MissionStatus.ENDED);
+            } else {
+                mission.setStatus(MissionStatus.SCHEDULED);
+            }
             return;
         }
 
